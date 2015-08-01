@@ -68,7 +68,7 @@ def run(args):
             if message[0:2] == "s/": # Start of a regex
                 regex = re.findall("(?<=/).*?(?=/)", message)
 
-                if not regex[0] and regex[1]: continue
+                if len(regex) < 2: continue
 
                 to_replace = re.compile(regex[0])
 
