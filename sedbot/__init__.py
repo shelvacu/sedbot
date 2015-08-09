@@ -18,7 +18,6 @@ import sys
 import os
 import re
 import collections
-import time
 
 from . import network
 from . import irc
@@ -84,6 +83,3 @@ def run(args):
                 network.send(fixed_line)
 
             msg_buffer.append({"who":who, "where":where, "message":message})
-
-        # Wait a second
-        time.sleep(1000)
