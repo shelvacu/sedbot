@@ -59,26 +59,26 @@ def run(args):
             # Tokenize
             tokens = line.split(" ")
 
-        if tokens[0] == "PING":
-            irc.resp_ping(tokens[1])
+            if tokens[0] == "PING":
+                irc.resp_ping(tokens[1])
 
-        if tokens[1] == "PRIVMSG":
-            who, where, message = irc.parse_privmsg(tokens)
+            if tokens[1] == "PRIVMSG":
+                who, where, msg = irc.parse_privmsg(tokens)
 
-            if message[0:2] == "s/": # Start of a regex
-                regex = re.findall("(?<=/).*?(?=/)", message)
+                if msg[0:2] == "s/": # Start of a regex
+                    regex = re.findall("(?<=/).*?(?=/)", msg)
 
-                if len(regex) < 2: continue
+                    if len(regex) < 2: continue
 
-                to_replace = re.compile(regex[0])
+                    to_replace = re.compile(regex[0])
 
-                for m in reversed(msg_buffer):
-                    if re.search(regex[0], m["message"]): break
+                    for m in reversed(msg_buffer):
+                        if re.search(regex[0], m["msg"]): break
 
-                regexed_msg = to_replace.sub(regex[1], m["message"])
+                    regexed_msg = to_replace.sub(regex[1], m["msg"])
 
-                fixed_line = "<{}> {}".format(m["who"], regexed_msg)
+                    fixed_line = "<{}> {}".format(m["who"], regexed_msg)
 
-                irc.send_msg(fixed_line)
+                    irc.send_msg(fixed_line)
 
-            msg_buffer.append({"who":who, "where":where, "message":message})
+                msg_buffer.append({"who":who, "where":where, "msg":msg})
