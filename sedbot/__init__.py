@@ -54,6 +54,8 @@ def run(args):
         in_buffer = pending_lines.pop()
 
         for line in pending_lines:
+            print(line)
+
             # Remove anything past the \r
             line = line.rstrip("\r")
             # Tokenize
@@ -76,6 +78,10 @@ def run(args):
                         if re.search(regex[0], m["msg"]): break
 
                     regexed_msg = to_replace.sub(regex[1], m["msg"])
+
+                    print("sedbot: replace '{} -> {}' for {} on message '{}'"
+                        "from {} in channel {}".format(regex[0], regex[1], who,
+                        m["msg"], m["who"], m["where"]))
 
                     fixed_line = "<{}> {}".format(m["who"], regexed_msg)
 
