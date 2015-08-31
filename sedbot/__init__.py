@@ -37,9 +37,9 @@ def run(args):
     if not network.connect(host, port):
         sys.exit(-1)
 
-    network.send("NICK underscores_sed\r\n")
-    network.send("USER sedbot 0 * :Sedbot IRC Bot\r\n")
-    network.send("JOIN {}\r\n".format(channel))
+    irc.set_nick("underscores_sed")
+    irc.set_user("sedbot 0 * :Sedbot IRC Bot")
+    irc.join_channel(channel)
 
     in_buffer = ""
 
@@ -60,7 +60,7 @@ def run(args):
             tokens = line.split(" ")
 
         if tokens[0] == "PING":
-            network.send("PONG {}\r\n".format(tokens[1]))
+            irc.resp_ping(tokens[1])
 
         if tokens[1] == "PRIVMSG":
             who, where, message = irc.parse_privmsg(tokens)
@@ -77,9 +77,8 @@ def run(args):
 
                 regexed_msg = to_replace.sub(regex[1], m["message"])
 
-                fixed_line = "PRIVMSG {} :<{}> {}\r\n".format(
-                    m["where"], m["who"], regexed_msg)
+                fixed_line = "<{}> {}".format(m["who"], regexed_msg)
 
-                network.send(fixed_line)
+                irc.send_msg(fixed_line)
 
             msg_buffer.append({"who":who, "where":where, "message":message})

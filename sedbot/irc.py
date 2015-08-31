@@ -16,6 +16,25 @@
 
 import re
 
+from sedbot import network
+
+def resp_ping(who):
+    network.send("PONG {}\r\n".format(who))
+
+def set_nick(nick):
+    network.send("NICK {}\r\n".format(nick))
+
+def set_user(string):
+    network.send("USER {}\r\n".format(string))
+
+def join_channel(channel):
+    global __channel__
+    network.send("JOIN {}\r\n".format(channel))
+    __channel__ = channel
+
+def send_msg(msg):
+    network.send("PRIVMSG {} :{}\r\n".format(__channel__, msg))
+
 def parse_privmsg(tokens):
     who = re.search("(?<=:).*?(?=!)", tokens[0]).group(0)
     where = tokens[2]
