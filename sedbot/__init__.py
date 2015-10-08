@@ -70,20 +70,25 @@ def run(args):
                 if msg[0:2] == "s/": # Start of a regex
                     regex = re.findall("(?<=/).*?(?=/)", msg)
 
-                    if len(regex) < 2: continue
+                    if len(regex) < 2:
+                        irc.send_msg("Regex is incomplete. No can do. :(")
+                        continue
 
-                    to_replace = re.compile(regex[0])
+                    try:
+                        to_replace = re.compile(regex[0])
 
-                    for m in reversed(msg_buffer):
-                        if re.search(regex[0], m["msg"]): break
+                        for m in reversed(msg_buffer):
+                            if re.search(regex[0], m["msg"]): break
 
-                    regexed_msg = to_replace.sub(regex[1], m["msg"])
+                        regexed_msg = to_replace.sub(regex[1], m["msg"])
 
-                    print("sedbot: replace '{} -> {}' for {} on message '{}'"
-                        "from {} in channel {}".format(regex[0], regex[1], who,
-                        m["msg"], m["who"], m["where"]))
+                        print("sedbot: replace '{} -> {}' for {} on message '{}'"
+                              "from {}".format(regex[0], regex[1], who,
+                              m["msg"], m["who"]))
 
-                    fixed_line = "<{}> {}".format(m["who"], regexed_msg)
+                        fixed_line = "<{}> {}".format(m["who"], regexed_msg)
+                    except re.error as e:
+                        fixed_line = "Sorry, couldn't do the regex - {}".format(e)
 
                     irc.send_msg(fixed_line)
 
