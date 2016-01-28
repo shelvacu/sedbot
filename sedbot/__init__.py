@@ -67,6 +67,10 @@ def run(args):
             if tokens[1] == "PRIVMSG":
                 who, where, msg = irc.parse_privmsg(tokens)
 
+                if re.search("I(['\"]m| am) hitler",msg,re.IGNORECASE):
+                    irc.send_msg("Are you sure {}?".format(who))
+                    continue
+
                 if msg[0:2] == "s/": # Start of a regex
                     regex = re.findall("(?<=/).*?(?=/)", msg)
 
